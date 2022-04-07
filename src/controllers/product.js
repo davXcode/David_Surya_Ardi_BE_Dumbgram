@@ -3,15 +3,15 @@ const { product, user, category, productCategory } = require('../../models');
 // Get all product
 exports.getProduct = async (req, res) => {
   try {
-    let data = await product.findAll({
-      include: [
-        {
-          model: user,
-          as: 'user',
-          attributes: {
-            exclude: ['createdAt', 'updatedAt', 'password'],
-          },
-        },
+    // let data = await product.findAll({
+    //   include: [
+    //     {
+    //       model: user,
+    //       as: 'user',
+    //       attributes: {
+    //         exclude: ['createdAt', 'updatedAt', 'password'],
+    //       },
+    //     },
         // {
         //   model: category,
         //   as: 'categories',
@@ -24,11 +24,58 @@ exports.getProduct = async (req, res) => {
         //     exclude: ['createdAt', 'updatedAt'],
         //   },
         // },
-      ],
-      attributes: {
-        exclude: ['createdAt', 'updatedAt', 'idUser'],
-      },
-    });
+    //   ],
+    //   attributes: {
+    //     exclude: ['createdAt', 'updatedAt', 'idUser'],
+    //   },
+    // });
+
+    // sort fitur
+    let data = "";
+        let sortNameAsc = false;
+        let sortNameDsc = false; // name z to a
+        let sortPriceAsc = false;
+        let sortPriceDsc = true; // high price to lower price
+
+        if(sortNameAsc == true){
+             data = await product.findAll({
+                order: [['name', 'ASC']],
+                attributes: {
+                  exclude: ['createdAt', 'updatedAt'],
+                }
+              });
+        };
+        if(sortNameDsc == true){
+            data = await product.findAll({
+               order: [['name', 'DESC']],
+               attributes: {
+                 exclude: ['createdAt', 'updatedAt'],
+               }
+             });
+       };
+        if(sortPriceAsc == true){
+             data = await product.findAll({
+                order: [['price', 'ASC']],
+                attributes: {
+                  exclude: ['createdAt', 'updatedAt'],
+                }
+              });
+        };
+        if(sortPriceDsc == true){
+            data = await product.findAll({
+               order: [['price', 'DESC']],
+               attributes: {
+                 exclude: ['createdAt', 'updatedAt'],
+               }
+             });
+       };
+        if(sortPriceAsc == false && sortPriceDsc == false && sortNameAsc == false && sortNameDsc == false){
+             data = await product.findAll({
+                attributes: {
+                  exclude: ['createdAt', 'updatedAt'],
+                }
+              });
+        };
 
     // Path File image
     data = data.map((item) => {

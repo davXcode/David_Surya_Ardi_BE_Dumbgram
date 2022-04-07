@@ -59,25 +59,21 @@ exports.getCategory = async (req, res) => {
 // get Category details
 exports.getCategory = async (req, res) => {
     try {
-      const id = req.params.id
-      const data = await category.findOne({
+    const data = await category.findAll({
         attributes:{
-            exclude:['createdAt','updatedAt']
-        },
-        where:{
-            id,
+        exclude:['createdAt','updatedAt']
         }
-      });
+        });
   
       res.send({
         status: 'success',
         data,
-      });
-    } catch (error) {
-      console.log(error);
-      req.send({
-        status:'failed',
-        message: 'server error',
+        });
+      } catch (error) {
+          console.log(error);
+          res.send({
+            status:'failed',
+            message: 'server error',
       });
     }
 };

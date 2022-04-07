@@ -2,62 +2,139 @@
 const { user } = require("../../models");
 
 // import joi validation
-const Joi = require("joi");
+const joi = require("joi");
 // import bcrypt
 const bcrypt = require("bcrypt");
 //import jsonwebtoken
 const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
-  // our validation schema here
-  const schema = Joi.object({
-    name: Joi.string().min(5).required(),
-    email: Joi.string().email().min(6).required(),
-    password: Joi.string().min(6).required(),
+
+
+  let data = req.body
+
+  if(!data.status){
+      data = {
+          ...data,
+          status: 'customer',
+      };
+  };
+
+  const schema = joi.object({
+      name:joi.string().min(4).required(),
+      email:joi.string().email().required(),
+      password:joi.string().min(6).required(),
+      status:joi.string(),
   });
 
-  // do validation and get error object from schema.validate
-  const { error } = schema.validate(req.body);
+  const { error }= schema.validate(data);
 
-  // if error exist send validation error message
-  if (error)
-    return res.status(400).send({
-      error: {
-        message: error.details[0].message,
-      },
-    });
-
-  try {
-    // we generate salt (random value) with 10 rounds
-    const salt = await bcrypt.genSalt(10);
-    // we hash password from request with salt
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-    const newUser = await user.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: hashedPassword,
-    });
-
-    // generate token
-    const token = jwt.sign({ id: user.id }, process.env.TOKEN_KEY);
-    
-    res.status(200).send({
-      status: "success...",
-      data: {
-        name: newUser.name,
-        email: newUser.email,
-        token
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      status: "failed",
-      message: "Server Error",
-    });
+  if (error) {
+      return res.send({
+          error:{
+              message: error.details[0].message,
+          },
+      });
   }
+
+  const dataInDB = await user.findOne({
+      where: {
+          email: data.email
+      }
+  })
+
+  if(dataInDB){
+      return res.status(400).send({
+          error: {
+              message: `Email ${data.email} is Already`,
+          }
+      })
+  }
+  try {
+
+  const hashedPassword = await bcrypt.hash(req.body.password, 10)
+
+  const newUser = await user.create({
+      name: data.name,
+      email: data.email,
+      password: hashedPassword,
+      status: data.status,
+  })
+
+
+  const SECRET_KEY = 'akupastibisa';
+  const token = jwt.sign({id:newUser.id}, SECRET_KEY);
+
+  res.status(200).send({
+      status: 'success',
+      data:{
+          id: newUser.id,
+          name: newUser.name,
+          email: newUser.email,
+          token,
+      }
+  });
+
+} catch (error) {
+  console.log(error)
+  res.status(500).send({
+      status: 'failed',
+      message:'server error',
+  })
+}
+
 };
+
+// Register option 2
+//   // our validation schema here
+//   const schema = Joi.object({
+//     name: Joi.string().min(5).required(),
+//     email: Joi.string().email().min(6).required(),
+//     password: Joi.string().min(6).required(),
+//   });
+
+//   // do validation and get error object from schema.validate
+//   const { error } = schema.validate(req.body);
+
+//   // if error exist send validation error message
+//   if (error)
+//     return res.status(400).send({
+//       error: {
+//         message: error.details[0].message,
+//       },
+//     });
+
+//   try {
+//     // we generate salt (random value) with 10 rounds
+//     const salt = await bcrypt.genSalt(10);
+//     // we hash password from request with salt
+//     const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+//     const newUser = await user.create({
+//       name: req.body.name,
+//       email: req.body.email,
+//       password: hashedPassword,
+//     });
+
+//     // generate token
+//     const token = jwt.sign({ id: user.id }, process.env.TOKEN_KEY);
+    
+//     res.status(200).send({
+//       status: "success...",
+//       data: {
+//         name: newUser.name,
+//         email: newUser.email,
+//         token
+//       },
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({
+//       status: "failed",
+//       message: "Server Error",
+//     });
+//   }
+// };
 
 exports.login = async (req, res) => {
   // our validation schema here
