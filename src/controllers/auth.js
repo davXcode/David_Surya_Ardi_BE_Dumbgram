@@ -138,9 +138,9 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   // our validation schema here
-  const schema = Joi.object({
-    email: Joi.string().email().min(6).required(),
-    password: Joi.string().min(6).required(),
+  const schema = joi.object({
+    email: joi.string().email().min(6).required(),
+    password: joi.string().min(6).required(),
   });
 
   // do validation and get error object from schema.validate

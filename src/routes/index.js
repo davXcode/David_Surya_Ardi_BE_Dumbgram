@@ -17,7 +17,7 @@ const {
 } = require('../controllers/transaction'); // import transaction
 const { register, login } = require('../controllers/auth'); // import register & Login
 
-const { addCategory, getCategory, updateCategory, deleteCategory } = require('../controllers/category'); // import category
+const { addCategory, getCategory, getcategory, updateCategory, deleteCategory } = require('../controllers/category'); // import category
 
 // Middleware
 const { auth } = require('../middlewares/auth');
@@ -39,7 +39,7 @@ router.delete('/product/:id', deleteProduct); // Delete Product
 
 // Route Category
 router.post('/category', auth, addCategory); // add category
-router.get('/category', auth, getCategory); // get category
+router.get('/category', auth, getcategory); // get category
 router.get('/category/:id', auth, getCategory); //get category detail
 router.patch('/category/:id', auth, updateCategory); // update category
 router.delete('/category/:id', auth, deleteCategory); // delete category

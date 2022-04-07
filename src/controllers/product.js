@@ -115,7 +115,7 @@ exports.getproduct = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    req.send({
+    res.send({
       status:'failed',
       message: 'server error',
     });

@@ -47,20 +47,81 @@ exports.getTransactions = async (req, res) => {
 
 exports.addTransaction = async (req, res) => {
     try {
-        const data = req.body
+        let data = req.body;
+        let buyer = req.user; 
 
-        await transaction.create(data)
+        const dataproduct = await product.findOne({
+            attributes:{
+                exclude:['name','desc','image','qty','createdAt','updatedAt']
+            },
+            where:{
+                id: data.idProduct,
+            },
+          });
+
+          const dataseller = await user.findOne({
+            attributes:{
+                exclude:['email','password','createdAt','updatedAt','name','status']
+            },
+            where:{
+                id: dataproduct.idUser,
+            },
+          });
+
+          if(!data.price){
+            data = {
+                ...data,
+                price: dataproduct.price,
+                status: "success"
+            };
+        };
+
+        await transaction.create({
+            idProduct: data.idProduct,
+            idBuyer: buyer.id,
+            idSeller: dataseller.id,
+            price: data.price,
+            status: data.status
+        });
 
         res.send({
             status: 'success',
-            message: 'Add transaction finished'
+            data: {
+                transaction: {
+                    id: data.id,
+                    idProduct: data.idProduct,
+                    idBuyer: buyer.id,
+                    idSeller: dataseller.id,
+                    price: data.price
+                }
+            }
         })
 
     } catch (error) {
         console.log(error)
         res.send({
             status: 'failed',
-            message: 'Server Error'
+            message: 'Server Error',
         })
     }
 }
+
+    // Add Transaction option 2
+//     try {
+//         const data = req.body
+
+//         await transaction.create(data)
+
+//         res.send({
+//             status: 'success',
+//             message: 'Add transaction finished'
+//         })
+
+//     } catch (error) {
+//         console.log(error)
+//         res.send({
+//             status: 'failed',
+//             message: 'Server Error'
+//         })
+//     }
+// }

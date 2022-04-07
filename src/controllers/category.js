@@ -35,7 +35,7 @@ exports.addCategory = async (req, res) => {
 };
 
 // get Category
-exports.getCategory = async (req, res) => {
+exports.getcategory = async (req, res) => {
     try {
     const data = await category.findAll({
         attributes:{
@@ -45,7 +45,9 @@ exports.getCategory = async (req, res) => {
     
     res.send({
         status: 'success',
-        data,
+        data: {
+            categories: data
+        },
       });
     } catch (error) {
         console.log(error);
@@ -58,24 +60,28 @@ exports.getCategory = async (req, res) => {
 
 // get Category details
 exports.getCategory = async (req, res) => {
-    try {
-    const data = await category.findAll({
-        attributes:{
-        exclude:['createdAt','updatedAt']
-        }
-        });
-  
-      res.send({
-        status: 'success',
-        data,
-        });
-      } catch (error) {
-          console.log(error);
-          res.send({
-            status:'failed',
-            message: 'server error',
-      });
-    }
+  try {
+    const id = req.params.id
+    const data = await category.findOne({
+      attributes:{
+          exclude:['createdAt','updatedAt']
+      },
+      where:{
+          id,
+      }
+    });
+
+    res.send({
+      status: 'success',
+      data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({
+      status:'failed',
+      message: 'server error',
+    });
+  }
 };
 
 // Update category
