@@ -3,39 +3,13 @@ const { product, user, category, productCategory } = require('../../models');
 // Get all product
 exports.getProduct = async (req, res) => {
   try {
-    // let data = await product.findAll({
-    //   include: [
-    //     {
-    //       model: user,
-    //       as: 'user',
-    //       attributes: {
-    //         exclude: ['createdAt', 'updatedAt', 'password'],
-    //       },
-    //     },
-        // {
-        //   model: category,
-        //   as: 'categories',
-        //   through: {
-        //     model: productCategory,
-        //     as: 'bridge',
-        //     attributes: [],
-        //   },
-        //   attributes: {
-        //     exclude: ['createdAt', 'updatedAt'],
-        //   },
-        // },
-    //   ],
-    //   attributes: {
-    //     exclude: ['createdAt', 'updatedAt', 'idUser'],
-    //   },
-    // });
 
     // sort fitur
     let data = "";
         let sortNameAsc = false;
         let sortNameDsc = false; // name z to a
-        let sortPriceAsc = false;
-        let sortPriceDsc = true; // high price to lower price
+        let sortPriceAsc = true;
+        let sortPriceDsc = false; // high price to lower price
 
         if(sortNameAsc == true){
              data = await product.findAll({
@@ -185,25 +159,6 @@ exports.addProduct = async (req, res) => {
 
     const newProduct = await product.create(data);
 
-    // const categoryData = await category.findOne({
-    //   where: {
-    //     name: categoryName,
-    //   },
-    // });
-
-    // if (categoryData) {
-    //   await productCategory.create({
-    //     idCategory: categoryData.id,
-    //     idProduct: newProduct.id,
-    //   });
-    // } else {
-    //   const newCategory = await category.create({ name: categoryName });
-    //   await productCategory.create({
-    //     idCategory: newCategory.id,
-    //     idProduct: newProduct.id,
-    //   });
-    // }
-
     let productData = await product.findOne({
       where: {
         id: newProduct.id,
@@ -216,18 +171,6 @@ exports.addProduct = async (req, res) => {
             exclude: ['createdAt', 'updatedAt', 'password'],
           },
         },
-        // {
-        //   model: category,
-        //   as: 'categories',
-        //   through: {
-        //     model: productCategory,
-        //     as: 'bridge',
-        //     attributes: [],
-        //   },
-        //   attributes: {
-        //     exclude: ['createdAt', 'updatedAt'],
-        //   },
-        // },
       ],
       attributes: {
         exclude: ['createdAt', 'updatedAt', 'idUser'],

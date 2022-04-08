@@ -1,5 +1,6 @@
 const { user, transaction, product } = require('../../models')
 
+// Get All transaction
 exports.getTransactions = async (req, res) => {
     try {
 
@@ -45,6 +46,7 @@ exports.getTransactions = async (req, res) => {
     }
 }
 
+// Buy product
 exports.addTransaction = async (req, res) => {
     try {
         let data = req.body;
@@ -105,23 +107,3 @@ exports.addTransaction = async (req, res) => {
         })
     }
 }
-
-    // Add Transaction option 2
-//     try {
-//         const data = req.body
-
-//         await transaction.create(data)
-
-//         res.send({
-//             status: 'success',
-//             message: 'Add transaction finished'
-//         })
-
-//     } catch (error) {
-//         console.log(error)
-//         res.send({
-//             status: 'failed',
-//             message: 'Server Error'
-//         })
-//     }
-// }

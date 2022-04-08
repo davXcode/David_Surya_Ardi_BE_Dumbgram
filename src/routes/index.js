@@ -31,7 +31,7 @@ router.patch('/user/:id', updateUser); // update user
 router.delete('/user/:id', deleteUser); // delete user
 
 // Route Product
-router.get('/products', auth, getProduct); // get product
+router.get('/products', getProduct); // get product
 router.post('/product', auth, uploadFile('image'), addProduct); // place middleware before controller | add product
 router.get('/product/:id', getproduct); //get product detail
 router.patch('/product/:id', updateProduct); //update product
@@ -39,7 +39,7 @@ router.delete('/product/:id', deleteProduct); // Delete Product
 
 // Route Category
 router.post('/category', auth, addCategory); // add category
-router.get('/category', auth, getcategory); // get category
+router.get('/category', getcategory); // get category
 router.get('/category/:id', auth, getCategory); //get category detail
 router.patch('/category/:id', auth, updateCategory); // update category
 router.delete('/category/:id', auth, deleteCategory); // delete category

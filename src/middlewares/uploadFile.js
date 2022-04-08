@@ -2,7 +2,7 @@
 const multer = require('multer');
 
 exports.uploadFile = (imageFile) => {
-  // Destionation & rename file
+  // Destination & rename file
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads');
